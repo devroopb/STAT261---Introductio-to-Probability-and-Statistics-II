@@ -1,0 +1,137 @@
+---
+title: "Lecture Assignment 5 - R output analyses"
+author: "Mary Lesperance"
+date: "March 20, 2018"
+output:
+  pdf_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  html_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+# Student Performance Data Set
+
+This data set describes student achievement and related variables of students from two Portuguese secondary schools. The data attributes include student grades, demographic, social and school related features and it was collected by using school reports and questionnaires. Two datasets are provided regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por). We will use the Mathematics data set.  A description of the variables in in the 
+file called StudentPerformanceData.pdf in the CourseSpaces Assignment5 folder.
+
+Reference:  https://archive.ics.uci.edu/ml/datasets/student+performance
+
+##Data preparation and descriptives##
+
+```{r}
+student=read.table("student-mat.csv",sep=";",header=TRUE)   #Math data set
+print(nrow(student)) 
+head(student)
+
+summary(student)
+
+hist(student$G3, main='Figure 1: Histogram of student grades', xlab='grades')
+hist(student$Walc, main='Figure 2: Histogram of Weekend Alcohol Consumption', xlab='consumption level')
+
+```
+
+-------
+
+##Analyze the grades for first 10 students##
+###Inferences for the mean, $\mu$###
+```{r}
+
+y<-head(student$G3,10)  
+y
+
+#mean of the first 10 salaries
+mean(y) 
+#sd of the first 10 salaries
+sd(y) 
+
+hist(y,main='Figure 3: Histogram of 10 student grades', xlab='grades')
+
+qqnorm(y,main='Figure 4: Normal QQ plot of 10 student grades', ylab='grades')
+qqline(y, lty=1)
+
+```
+
+
+Since $\sigma^2$ is unknown, we need to use the t-distribution to
+compute a confidence interval for the mean grade based on
+our sample of size $n=10$ observations.
+
+```{r}
+#For the small sample of size 10
+mean(y)+c(-1,1)*qt(.975,9)*sd(y)/sqrt(length(y))
+qt(.975,9)
+t.test(y, mu=10)
+
+```
+
+-----------------------------
+
+##Compare grades for males and females##
+###Inferences about the differences in the means, $\mu_1 - \mu_2$###
+
+```{r}
+#Graph the data; side-by-side boxplots are one of my favourites
+boxplot(G3~sex,data=student,main='Figure 5: Grades for Males and Females')
+
+```
+
+###Inferences for the differences:  Assume variances equal and unknown###
+
+```{r}
+#this uses pooled estimate of variance for test that H0: mu_F - mu_M = 0
+t.test(G3~sex, data=student,var.equal=TRUE)
+
+```
+
+
+###Inferences for the differences:  Do not assume variances are equal###
+
+```{r}
+#this does NOT use pooled estimate of variance for test that H0: mu_F - mu_M = 0
+t.test(G3~sex, data=student,var.equal=FALSE)
+
+```
+
+------------------
+
+##Regression analysis of Grades as a function of Weekend Alcohol Consumption###
+
+
+```{r }
+#Graph the data; side-by-side boxplots are one of my favourites
+
+boxplot(student$G3~student$Walc, 
+    xlab='Weekend Alcohol Consumption',ylab='Grades',
+     main='Figure 6: Grades versus Weekend Alcohol Consumption')
+
+plot(student$G3~student$Walc, 
+     xlab='Weekend Alcohol Consumption',ylab='Grades',
+     main='Figure 7: Grades versus Weekend Alcohol Consumption')
+
+#Fit the regression model
+student.lm<-lm(G3~Walc, data=student)
+summary(student.lm)
+
+
+qqnorm(resid(student.lm), main="Figure 8: QQ plot of residuals from regression", ylab="residuals")
+qqline(resid(student.lm),lty=1)
+
+hist(resid(student.lm),main='Figure 9: Histogram of Residuals',xlab='Residuals')
+boxplot(student$G3~student$Walc, 
+    xlab='Weekend Alcohol Consumption',ylab='Grades',
+     main='Figure 10: Grades versus Weekend Alcohol Consumption')
+abline(student.lm,col=4)
+plot(student$G3~student$Walc, 
+     xlab='Weekend Alcohol Consumption',ylab='Grades',
+     main='Figure 11: Grades versus Weekend Alcohol Consumption')
+abline(student.lm,col=4)
+
+confint(student.lm)
+
+anova(student.lm)
+
+```
+

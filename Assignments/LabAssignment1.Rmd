@@ -1,0 +1,52 @@
+---
+title: "Lab Assignment 1"
+author: "Fill in your Name"
+date: "Fill in the date"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Likelihood methods for the Poisson distribution
+
+* Execute each chunk of code to ensure that your code works properly.  
+* Then HTML knit the entire document.
+* If you cannot compile all of your code without errors before the end of the class, 
+comment out the chunks that are not working.
+* Open the HTML document in a browser.
+* Save the HTML file as a pdf file. 
+* Submit your pdf assignment.
+
+## 1.  First generate 1 observations from the Poisson(lambda=5) distribution and print the value.
+
+
+```{r data}
+set.seed(54321)   #setting the random number generator seed SHOULD always be done before simulating
+
+
+```
+
+## 2.  Compute the Log-likelihood for a vector sequence of lambda values from 2 to 7 in steps of .05 .
+
+
+```{r LogLik}
+
+```
+
+
+## 3. Plot the Log-Likelihood function values from your answer in 2 versus lambda. Axes must be labelled and the plot must have a title.
+
+```{r plotLog}
+
+```
+
+
+## 4.  Generate n=10 observations from the same distribution and compute the sample mean of the 10 observations.  Plot the log-likelihood function given the n=10 observations.  Axes must be labelled and the plot must have a title.
+
+
+```{r plotLog10}
+set.seed(54321)
+
+```
+
+
